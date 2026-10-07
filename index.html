@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pantry Perks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: one phone-sized column. Act 1 is a believable "rewards" voucher; Act 2 rips it off and turns into a loud gotcha sticker. Single deliberate look, both themes. */
+:root {
+  --ground: #EEF3F1;      /* act 1 page: clean minty corporate */
+  --card: #FFFFFF;
+  --ink: #12302A;
+  --muted: #5D7570;
+  --brand: #0F8A6B;       /* plausible "rewards" green */
+  --line: #D5E2DE;
+  --hot: #FF3D7F;         /* act 2 */
+  --sun: #FFD23F;
+  --night: #1B1030;
+  --display: "Bagel Fat One", "Arial Black", Impact, sans-serif;
+  --body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", Consolas, ui-monospace, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body {
+  margin: 0; background: var(--ground); color: var(--ink);
+  font: 16px/1.5 var(--body);
+  padding-inline: 16px; padding-block: 24px 40px;
+  transition: background .5s ease;
+  overflow-x: hidden;
+}
+body.gotcha { background: var(--night); color: #fff; }
+.wrap { max-width: 420px; margin: 0 auto; display: grid; gap: 16px; }
+button { font: inherit; cursor: pointer; border: 0; }
+button:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+
+/* ---------- Act 1: the lure ---------- */
+.topbar { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--muted); }
+.logo { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--ink); letter-spacing: .02em; }
+.logo i { width: 26px; height: 26px; border-radius: 8px; background: var(--brand); display: grid; place-items: center; color: #fff; font-style: normal; font-size: 14px; }
+.voucher {
+  background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+  box-shadow: 0 12px 30px -18px rgba(18,48,42,.45);
+}
+.voucher .head { background: var(--brand); color: #fff; padding: 20px; display: grid; gap: 4px; }
+.eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; opacity: .85; }
+.voucher h1 { margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; text-wrap: balance; }
+.perf { height: 0; border-top: 2px dashed var(--line); margin: 0 14px; position: relative; }
+.perf::before, .perf::after { content: ""; position: absolute; top: -12px; width: 22px; height: 22px; border-radius: 50%; background: var(--ground); }
+.perf::before { left: -26px; } .perf::after { right: -26px; }
+.voucher .body { padding: 18px 20px 20px; display: grid; gap: 14px; }
+.items { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.items li { display: flex; justify-content: space-between; gap: 12px; font-size: 15px; }
+.items s { color: var(--muted); }
+.items b { color: var(--brand); }
+.meta { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.timer { font-family: var(--mono); font-weight: 700; color: #C2410C; font-variant-numeric: tabular-nums; }
+.code { font-family: var(--mono); letter-spacing: .2em; font-size: 14px; background: var(--ground); border-radius: 8px; padding: 8px 10px; text-align: center; color: var(--ink); }
+.cta {
+  background: var(--ink); color: #fff; border-radius: 12px; padding: 15px 18px; font-weight: 800; font-size: 16px; width: 100%;
+  transition: transform .1s ease;
+}
+.cta:active { transform: scale(.98); }
+.fine { font-size: 11px; color: var(--muted); text-align: center; }
+
+/* ---------- Processing ---------- */
+.proc { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 14px; }
+.proc h2 { margin: 0; font-size: 18px; font-weight: 800; }
+.bar { height: 10px; border-radius: 99px; background: var(--ground); overflow: hidden; }
+.bar span { display: block; height: 100%; width: 0; background: var(--brand); border-radius: inherit; transition: width .35s ease; }
+.pct { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.log { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; min-height: 210px; }
+.log li { display: flex; justify-content: space-between; gap: 10px; animation: in .25s ease both; }
+.log li span:first-child { min-width: 0; }
+.log .ok { color: var(--brand); font-weight: 700; flex-shrink: 0; }
+.log .bad { color: #C2410C; font-weight: 700; flex-shrink: 0; }
+@keyframes in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Act 2: gotcha ---------- */
+.gotcha-wrap { display: grid; gap: 18px; text-align: center; }
+.big {
+  font-family: var(--display); font-size: clamp(64px, 22vw, 104px); line-height: .9; margin: 8px 0 0;
+  color: var(--sun); text-shadow: 5px 5px 0 var(--hot);
+  transform: rotate(-4deg); animation: slam .55s cubic-bezier(.2,1.6,.4,1) both;
+}
+@keyframes slam { from { transform: scale(3) rotate(8deg); opacity: 0; } to { transform: rotate(-4deg); opacity: 1; } }
+.sub { font-size: 18px; font-weight: 600; margin: 0; text-wrap: balance; }
+.sub em { font-style: normal; color: var(--sun); }
+.cert {
+  background: var(--sun); color: var(--night); border-radius: 6px; padding: 22px 20px; text-align: left;
+  position: relative; transform: rotate(1.2deg); box-shadow: 8px 8px 0 var(--hot);
+  display: grid; gap: 12px;
+}
+.cert h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 24px; line-height: 1.1; }
+.cert p { margin: 0; font-size: 14px; }
+.cert dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; font-size: 13.5px; border-top: 2px solid var(--night); padding-top: 12px; }
+.cert dt { font-weight: 600; }
+.cert dd { margin: 0; font-family: var(--mono); font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.stamp {
+  position: absolute; right: 12px; top: -18px; background: var(--hot); color: #fff; font-family: var(--display);
+  font-size: 14px; padding: 8px 12px; border-radius: 999px; transform: rotate(10deg); letter-spacing: .03em;
+}
+.btn-hot { background: var(--hot); color: #fff; border-radius: 12px; padding: 14px; font-weight: 800; font-size: 16px; }
+.btn-ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.35); border-radius: 12px; padding: 12px; font-weight: 800; font-size: 16px; }
+.ticker { display: flex; align-items: center; background: var(--hot); color: #fff; border-radius: 8px; overflow: hidden; font-weight: 800; font-size: 12.5px; letter-spacing: .04em; }
+.ticker .live { background: #fff; color: var(--hot); padding: 8px 10px; flex-shrink: 0; font-family: var(--mono); }
+.tick-track { overflow: hidden; white-space: nowrap; flex: 1; min-width: 0; }
+.tick-track span { display: inline-block; padding: 8px 0 8px 100%; animation: marquee 14s linear infinite; }
+@keyframes marquee { to { transform: translateX(-100%); } }
+.hero { display: grid; gap: 18px; padding-bottom: 72px; }
+.cert h3 { text-align: center; }
+.more { display: grid; gap: 14px; scroll-margin-top: 16px; }
+.game { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 16px; padding: 18px; display: grid; gap: 12px; text-align: center; }
+.game h4 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 24px; color: var(--sun); }
+.game p { margin: 0; }
+.chip { justify-self: center; font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--night); background: var(--sun); border-radius: 99px; padding: 3px 10px; }
+.excuse { font-size: 18px; font-weight: 600; min-height: 2.8em; display: grid; place-items: center; }
+.result { font-size: 16px; font-weight: 700; }
+.arena { position: relative; height: 140px; border: 2px dashed rgba(255,255,255,.2); border-radius: 12px; }
+.runner { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); transition: left .18s ease, top .18s ease; white-space: nowrap; }
+.tip { font-size: 12.5px; opacity: .7; margin: 4px 0 0; }
+.tip b { color: var(--sun); }
+.scroll-cue {
+  position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 5;
+  background: var(--sun); color: var(--night); font-weight: 800; font-size: 15px; border-radius: 999px; padding: 13px 22px;
+  box-shadow: 0 6px 0 var(--hot), 0 12px 30px rgba(0,0,0,.4); white-space: nowrap;
+  animation: bob 1.1s ease-in-out infinite;
+}
+.scroll-cue span { display: inline-block; margin-left: 4px; }
+@keyframes bob { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -8px); } }
+canvas#confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="confetti" hidden></canvas>
+<main class="wrap" id="app">
+
+  <!-- ACT 1 -->
+  <section id="lure" class="wrap">
+    <div class="topbar">
+      <span class="logo"><i>P</i>Pantry Perks</span>
+      <span>Employee rewards</span>
+    </div>
+
+    <article class="voucher">
+      <div class="head">
+        <span class="eyebrow">Floor reward · unlocked by scan</span>
+        <h1>You've unlocked a free chai + samosa combo</h1>
+      </div>
+      <div class="body">
+        <ul class="items">
+          <li><span>Masala chai (large)</span><span><s>₹40</s> <b>FREE</b></span></li>
+          <li><span>Samosa ×2 with green chutney</span><span><s>₹50</s> <b>FREE</b></span></li>
+          <li><span>Priority pantry queue</span><span><b>Included</b></span></li>
+        </ul>
+        <div class="code" aria-label="Voucher code">CHAI-7Q4X-SMSA</div>
+        <div class="meta">
+          <span>Only 3 left on this floor</span>
+          <span>Expires in <span class="timer" id="timer">04:59</span></span>
+        </div>
+      </div>
+      <div class="perf" aria-hidden="true"></div>
+      <div class="body">
+        <button class="cta" id="claim">Claim my voucher</button>
+        <p class="fine">Show the green screen at the pantry counter. One per employee.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- PROCESSING -->
+  <section id="processing" class="proc" hidden>
+    <h2>Activating your voucher…</h2>
+    <div class="bar"><span id="barfill"></span></div>
+    <span class="pct" id="pct">0%</span>
+    <ul class="log" id="log"></ul>
+  </section>
+
+  <!-- ACT 2 -->
+  <section id="reveal" class="gotcha-wrap" hidden>
+    <div class="ticker" aria-label="Breaking news"><span class="live">BREAKING</span><div class="tick-track"><span>EMPLOYEE SCANS WALL FOR SAMOSA · PANTRY DENIES EVERYTHING · CHAI "NEVER EXISTED" · </span></div></div>
+
+    <div class="hero">
+      <h1 class="big">GOTCHA.</h1>
+      <p class="sub">No samosa. No chai. <em>Just you.</em></p>
+
+      <article class="cert" aria-label="Certificate">
+        <span class="stamp">CERTIFIED</span>
+        <h3>Certified Snack Victim</h3>
+        <dl>
+          <dt>Samosas received</dt><dd>0</dd>
+          <dt>Dignity left</dt><dd id="s-dig">—</dd>
+          <dt>Rank</dt><dd id="s-rank">—</dd>
+        </dl>
+      </article>
+    </div>
+
+    <div id="more" class="more">
+      <section class="game">
+        <span class="chip">1 / 3</span>
+        <h4>Okay, a real samosa</h4>
+        <div class="arena" id="arena"><button class="btn-hot runner" id="runner">Grab it</button></div>
+        <p class="result" id="prize" hidden></p>
+      </section>
+
+      <section class="game">
+        <span class="chip">2 / 3</span>
+        <h4>Your cover story</h4>
+        <p class="excuse" id="excuse">"I was testing it for IT security."</p>
+        <button class="btn-ghost" id="next-excuse">Another one</button>
+      </section>
+
+      <section class="game">
+        <span class="chip">3 / 3</span>
+        <h4>Get revenge</h4>
+        <button class="btn-hot" id="revenge">Show me how</button>
+        <p class="result" id="revenge-out" hidden>Say nothing. Go back to your desk. Watch the next one fall.</p>
+      </section>
+
+      <p class="tip"><b>Real tip:</b> check where a QR code goes before you scan it.</p>
+    </div>
+  </section>
+
+  <button class="scroll-cue" id="cue" hidden>3 more pranks inside <span aria-hidden="true">↓</span></button>
+</main>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const loadedAt = Date.now();
+  let claimAt = 0;
+
+  // Countdown that resets suspiciously
+  let left = 299;
+  const tick = setInterval(() => {
+    left = left > 0 ? left - 1 : 299;
+    $('timer').textContent = String(Math.floor(left / 60)).padStart(2, '0') + ':' + String(left % 60).padStart(2, '0');
+  }, 1000);
+
+  const steps = [
+    ['Locating pantry', 'OK', 'ok'],
+    ['Checking if you\'re in a meeting', 'SUSPICIOUS', 'bad'],
+    ['Who took the last Maggi?', 'WE KNOW', 'bad'],
+    ['Heating samosa', '3%', 'ok'],
+    ['How fast you tapped "Claim"', 'VERY FAST', 'ok'],
+  ];
+
+  // Sad trombone, synthesized (needs the tap on Claim to unlock audio)
+  let ctx;
+  function trombone() {
+    try {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      const notes = [392, 370, 349, 330];
+      notes.forEach((f, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sawtooth';
+        const t = ctx.currentTime + i * 0.45;
+        const len = i === 3 ? 1.2 : 0.4;
+        o.frequency.setValueAtTime(f, t);
+        if (i === 3) { o.frequency.linearRampToValueAtTime(f - 20, t + len); }
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.12, t + 0.05);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+        o.connect(g).connect(ctx.destination);
+        o.start(t); o.stop(t + len + 0.05);
+      });
+    } catch (e) { /* no sound, still funny */ }
+  }
+
+  function confetti() {
+    const c = $('confetti');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    c.hidden = false;
+    const x = c.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const W = c.width = innerWidth * dpr, H = c.height = innerHeight * dpr;
+    const cols = ['#FFD23F', '#FF3D7F', '#3DDBD9', '#FFFFFF', '#8B5CF6'];
+    const bits = Array.from({ length: 160 }, () => ({
+      x: W / 2, y: H * 0.3, vx: (Math.random() - .5) * 22 * dpr, vy: (Math.random() * -18 - 4) * dpr,
+      w: (6 + Math.random() * 8) * dpr, h: (4 + Math.random() * 6) * dpr, r: Math.random() * 6, vr: (Math.random() - .5) * .4,
+      c: cols[Math.floor(Math.random() * cols.length)]
+    }));
+    let frames = 0;
+    (function draw() {
+      x.clearRect(0, 0, W, H);
+      bits.forEach(b => {
+        b.vy += .5 * dpr; b.vx *= .99; b.x += b.vx; b.y += b.vy; b.r += b.vr;
+        x.save(); x.translate(b.x, b.y); x.rotate(b.r); x.fillStyle = b.c; x.fillRect(-b.w / 2, -b.h / 2, b.w, b.h); x.restore();
+      });
+      if (++frames < 220) requestAnimationFrame(draw); else { c.hidden = true; }
+    })();
+  }
+
+  function reveal() {
+    clearInterval(tick);
+    const stare = Math.max(1, Math.round((claimAt - loadedAt) / 1000));
+    $('s-dig').textContent = Math.max(3, 40 - stare) + '%';
+    const ranks = ['Samosa Seeker', 'Chai Chaser', 'Pantry Opportunist', 'Carb Hunter'];
+    $('s-rank').textContent = ranks[Math.floor(Math.random() * ranks.length)];
+    $('processing').hidden = true;
+    $('reveal').hidden = false;
+    document.body.classList.add('gotcha');
+    document.title = 'Gotcha';
+    if (navigator.vibrate) { try { navigator.vibrate([80, 60, 80, 60, 300]); } catch (e) {} }
+    trombone();
+    confetti();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => { $('cue').hidden = false; }, 1400);
+  }
+
+  // Bottom pill: tells people there's more below, hides once they get there
+  $('cue').addEventListener('click', () => $('more').scrollIntoView({ behavior: 'smooth' }));
+  addEventListener('scroll', () => {
+    if ($('cue').hidden || $('reveal').hidden) return;
+    if ($('more').getBoundingClientRect().top < innerHeight * 0.75) $('cue').hidden = true;
+  }, { passive: true });
+
+  function run() {
+    claimAt = Date.now();
+    $('lure').hidden = true;
+    $('processing').hidden = false;
+    const log = $('log'); log.innerHTML = '';
+    let i = 0, pct = 0;
+    const iv = setInterval(() => {
+      if (i < steps.length) {
+        const [label, res, cls] = steps[i++];
+        const li = document.createElement('li');
+        li.innerHTML = '<span></span><span class="' + cls + '"></span>';
+        li.children[0].textContent = label + '…';
+        li.children[1].textContent = res;
+        log.appendChild(li);
+        pct = Math.min(99, Math.round(i / steps.length * 99));
+        $('barfill').style.width = pct + '%';
+        $('pct').textContent = pct + '%';
+      } else {
+        clearInterval(iv);
+        $('pct').textContent = '99% (stuck, like you)';
+        setTimeout(reveal, 1100);
+      }
+    }, 650);
+  }
+
+  // Unlock audio on the first tap so the trombone can play later
+  $('claim').addEventListener('click', () => {
+    try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); ctx.resume && ctx.resume(); } catch (e) {}
+    run();
+  });
+  $('revenge').addEventListener('click', () => {
+    $('revenge').hidden = true;
+    $('revenge-out').hidden = false;
+  });
+
+  const excuses = [
+    '"I was testing it for IT security."',
+    '"I scanned it ironically."',
+    '"My phone did it. Not me."',
+    '"It was a phishing test. I passed."',
+    '"Q3 initiative. Very strategic."',
+    '"Who hasn\'t trusted a sticker?"',
+  ];
+  let ex = 0;
+  $('next-excuse').addEventListener('click', () => {
+    ex = (ex + 1) % excuses.length;
+    $('excuse').textContent = excuses[ex];
+    if (ex === excuses.length - 1) $('next-excuse').textContent = 'Just own it';
+  });
+
+  // The consolation button that runs away
+  const lines = ['Too slow', 'Nope', 'Almost!', 'Haha', 'Last try'];
+  let dodges = 0;
+  function dodge(e) {
+    if (dodges >= lines.length) return;
+    e.preventDefault();
+    const a = $('arena'), r = $('runner');
+    const maxX = a.clientWidth - r.offsetWidth, maxY = a.clientHeight - r.offsetHeight;
+    r.style.transform = 'none';
+    r.style.left = Math.round(Math.random() * Math.max(0, maxX)) + 'px';
+    r.style.top = Math.round(Math.random() * Math.max(0, maxY)) + 'px';
+    r.textContent = lines[dodges++];
+  }
+  $('runner').addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') dodge(e); });
+  let tapDodged = false;
+  $('runner').addEventListener('pointerdown', (e) => { if (dodges < lines.length) { tapDodged = true; dodge(e); } });
+  $('runner').addEventListener('click', () => {
+    if (tapDodged) { tapDodged = false; return; }
+    if (dodges < lines.length) return;
+    $('runner').textContent = 'Fine.';
+    $('runner').disabled = true;
+    $('prize').hidden = false;
+    $('prize').innerHTML = '<span style="font-size:48px;line-height:1">🔺</span><br>Here. Squint. It\'s a samosa.';
+  });
+})();
+</script>
+
+</body>
+</html>
